@@ -1,0 +1,63 @@
+<div>
+    <h2>Lista Pól</h2>
+    <mat-form-field appearance="fill">
+      <mat-label>Wybierz datę</mat-label>
+      <input matInput type="date" (change)="onDateChange($event)" />
+    </mat-form-field>
+  
+    <table mat-table [dataSource]="fields" class="mat-elevation-z8">
+  
+      <!-- Nazwa Pola -->
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef> Nazwa Pola </th>
+        <td mat-cell *matCellDef="let field"> {{field.name}} </td>
+      </ng-container>
+  
+      <!-- Powierzchnia -->
+      <ng-container matColumnDef="area">
+        <th mat-header-cell *matHeaderCellDef> Powierzchnia (ha) </th>
+        <td mat-cell *matCellDef="let field"> {{field.area}} </td>
+      </ng-container>
+  
+      <!-- Uprawy -->
+      <ng-container matColumnDef="crops">
+        <th mat-header-cell *matHeaderCellDef> Uprawy </th>
+        <td mat-cell *matCellDef="let field">
+          <ul>
+            <li *ngFor="let crop of field.crops">
+              {{ crop.name }} - {{ crop.size }} ha ({{ crop.percentage | number:'1.2-2' }}%)
+            </li>
+          </ul>
+        </td>
+      </ng-container>
+  
+      <!-- Opady -->
+      <ng-container matColumnDef="rainfall">
+        <th mat-header-cell *matHeaderCellDef> Opady (mm) </th>
+        <td mat-cell *matCellDef="let field"> {{ weatherData[field._id]?.rainfall || 'N/A' }} </td>
+      </ng-container>
+  
+      <!-- Temperatura -->
+      <ng-container matColumnDef="temperature">
+        <th mat-header-cell *matHeaderCellDef> Temperatura (°C) </th>
+        <td mat-cell *matCellDef="let field">
+          Min: {{ weatherData[field._id]?.tempMin || 'N/A' }}°C<br />
+          Max: {{ weatherData[field._id]?.tempMax || 'N/A' }}°C<br />
+          Avg: {{ weatherData[field._id]?.tempAvg || 'N/A' }}°C
+        </td>
+      </ng-container>
+  
+      <!-- Zyski / Straty -->
+      <ng-container matColumnDef="profitLoss">
+        <th mat-header-cell *matHeaderCellDef> Zyski / Straty </th>
+        <td mat-cell *matCellDef="let field">
+          Zysk: {{ field.profit | currency:'PLN' }}<br />
+          Strata: {{ field.loss | currency:'PLN' }}
+        </td>
+      </ng-container>
+  
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+  

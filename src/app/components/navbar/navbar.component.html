@@ -1,0 +1,24 @@
+<nav class="navbar">
+  <div class="navbar-container">
+    <div class="navbar-brand">
+      <a 
+      >Engineer WebApp</a>
+    </div>
+    <ul class="navbar-menu">
+      <li *ngFor="let item of navItems" class="navbar-item">
+        <!-- Jeśli element to Logout, dodaj (click) handler -->
+        <a *ngIf="item.label !== 'Logout'"
+           [routerLink]="item.path"
+           routerLinkActive="active"
+           [routerLinkActiveOptions]="{ exact: item.path === '' }">
+          {{ item.label }}
+        </a>
+        <a *ngIf="item.label === 'Logout'"
+           (click)="onLogout()"
+           style="cursor: pointer;">
+          {{ item.label }}
+        </a>
+      </li>
+    </ul>
+  </div>
+</nav>

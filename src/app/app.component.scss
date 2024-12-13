@@ -1,0 +1,11 @@
+.content {
+    display: flex;
+    justify-content: center; /* Centruje zawartość w poziomie */
+    align-items: center; /* Centruje zawartość w pionie */
+    padding: 2rem;
+  }
+
+  .leaflet-container {
+    width: 100%;
+    height: 60vh;
+}

@@ -1,0 +1,21 @@
+.map-wrapper {
+    /* Ustaw szerokość i wysokość kontenera mapy */
+    max-width: 800px; /* Maksymalna szerokość kontenera */
+    width: 100%; /* Szerokość 100% kontenera nadrzędnego */
+    margin: 2rem auto; /* Centrowanie mapy z odstępem od góry i dołu */
+    padding: 1rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    background-color: #fff; /* Tło kontenera */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  #map {
+    width: 100%;
+    height: 400px; /* Dostosuj wysokość według potrzeb */
+    border-radius: 8px;
+    /* Zapewnij, że mapa nie wychodzi poza kontener */
+    overflow: hidden;
+  }

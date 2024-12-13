@@ -1,0 +1,37 @@
+<div class="editor-container">
+    <h2>Edytuj Profil</h2>
+    <form [formGroup]="editForm" (ngSubmit)="onSubmit()">
+      <div>
+        <label for="firstName">Imię:</label>
+        <input id="firstName" formControlName="firstName" type="text" />
+        <div *ngIf="editForm.get('firstName')?.invalid && editForm.get('firstName')?.touched">
+          Imię jest wymagane.
+        </div>
+      </div>
+  
+      <div>
+        <label for="lastName">Nazwisko:</label>
+        <input id="lastName" formControlName="lastName" type="text" />
+        <div *ngIf="editForm.get('lastName')?.invalid && editForm.get('lastName')?.touched">
+          Nazwisko jest wymagane.
+        </div>
+      </div>
+  
+      <div>
+        <label for="password">Nowe Hasło:</label>
+        <input id="password" formControlName="password" type="password" />
+        <div *ngIf="editForm.get('password')?.invalid && editForm.get('password')?.touched">
+          Jeśli chcesz zmienić hasło, podaj nowe hasło.
+        </div>
+      </div>
+  
+      <button type="submit" [disabled]="editForm.invalid">Zaktualizuj Profil</button>
+    </form>
+  
+    <div *ngIf="errorMessage" class="error">
+      {{ errorMessage }}
+    </div>
+    <div *ngIf="successMessage" class="success">
+      {{ successMessage }}
+    </div>
+  </div>
