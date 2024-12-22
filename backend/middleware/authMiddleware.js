@@ -2,6 +2,11 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
 const auth = async (req, res, next) => {
+
+    // const authHeader = req.headers['authorization'];
+    // console.log('Authorization Header:', authHeader); // Log nagłówka
+    // const token = authHeader && authHeader.split(' ')[1]; 
+
     const token = req.header('Authorization')?.replace('Bearer ', '');
 
     if (!token) {

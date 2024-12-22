@@ -1,46 +1,53 @@
 // field.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, catchError, Observable, tap, throwError } from 'rxjs';
+import { Field } from '../interfaces/field-interace';
+import { Crop } from '../interfaces/crop-interface';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FieldService {
-    private apiUrl = 'http://localhost:5000/api/fields';
+    private fieldsUrl = 'http://localhost:5000/api/fields';
     private cropsUrl = 'http://localhost:5000/api/crops';
     private weatherUrl = 'http://localhost:5000/api/weather';
+
+
+    // Dodanie BehaviorSubject do zarządzania stanem pól
+    private fieldsSubject: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
+    public fields$ = this.fieldsSubject.asObservable();
   
     constructor(private http: HttpClient) { }
   
     // Metody dla pól
-    getFields(): Observable<any> {
-      return this.http.get<any>(this.apiUrl);
+    getFields(): Observable<Field[]> {
+      return this.http.get<Field[]>(this.fieldsUrl);
     }
   
-    addField(field: any): Observable<any> {
-      return this.http.post<any>(this.apiUrl, field);
+    addField(field: Partial<Field>): Observable<any> {
+      return this.http.post<Field>(this.fieldsUrl, field);
     }
   
-    updateField(id: string, field: any): Observable<any> {
-      return this.http.put<any>(`${this.apiUrl}/${id}`, field);
+    updateField(id: string, field: Partial<Field>): Observable<any> {
+      return this.http.put<Field>(`${this.fieldsUrl}/${id}`, field);
     }
   
     deleteField(id: string): Observable<any> {
-      return this.http.delete<any>(`${this.apiUrl}/${id}`);
+      return this.http.delete<any>(`${this.fieldsUrl}/${id}`);
     }
   
     // Metody dla upraw
-    getCrops(): Observable<any> {
-      return this.http.get<any>(this.cropsUrl);
+    getCrops(): Observable<Crop[]> {
+      return this.http.get<Crop[]>(this.cropsUrl);
     }
   
-    addCrop(crop: any): Observable<any> {
-      return this.http.post<any>(this.cropsUrl, crop);
+    addCrop(crop: Partial<Crop>): Observable<Crop> {
+      return this.http.post<Crop>(this.cropsUrl, crop);
     }
   
-    updateCrop(id: string, crop: any): Observable<any> {
-      return this.http.put<any>(`${this.cropsUrl}/${id}`, crop);
+    updateCrop(id: string, crop:  Partial<Crop>): Observable<Crop> {
+      return this.http.put<Crop>(`${this.cropsUrl}/${id}`, crop);
     }
   
     deleteCrop(id: string): Observable<any> {
@@ -61,4 +68,19 @@ export class FieldService {
     calculateEffectiveTemperatureSum(weatherData: any[]): number {
       return weatherData.reduce((sum, day) => sum + day.tempAvg, 0);
     }
+
+    fetchFields(): void {
+      this.getFields().pipe(
+        tap(fields => {
+          this.fieldsSubject.next(fields);
+        }),
+        catchError(error => {
+          console.error('Error fetching fields:', error);
+          this.fieldsSubject.next([]);
+          return throwError(error);
+        })
+      ).subscribe();
+    }
+
+    
 }

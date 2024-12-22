@@ -1,9 +1,28 @@
 <div>
     <h2>Lista Pól</h2>
-    <mat-form-field appearance="fill">
-      <mat-label>Wybierz datę</mat-label>
-      <input matInput type="date" (change)="onDateChange($event)" />
-    </mat-form-field>
+
+    <div style="display: flex; justify-content: flex-end; margin-bottom: 16px;">
+      <button mat-raised-button color="primary" (click)="openAddFieldDialog()">
+        Dodaj Pole
+      </button>
+    </div>
+  
+    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
+      <mat-form-field appearance="fill">
+        <mat-label>Wybierz datę</mat-label>
+        <input matInput [matDatepicker]="picker" [(ngModel)]="selectedDate" />
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+  
+      <button mat-raised-button color="primary" (click)="filterByDate()">
+        Filtruj
+      </button>
+  
+      <button mat-raised-button color="warn" (click)="clearFilter()">
+        Wyczyść
+      </button>
+    </div>
   
     <table mat-table [dataSource]="fields" class="mat-elevation-z8">
   

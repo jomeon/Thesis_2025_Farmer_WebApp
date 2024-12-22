@@ -9,3 +9,6 @@ const WeatherDataSchema = new mongoose.Schema({
     tempAvg: Number
   });
   
+const WeatherData = mongoose.model('WeatherData', WeatherDataSchema);
+
+module.exports = WeatherData;

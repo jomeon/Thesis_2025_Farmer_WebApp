@@ -1,37 +1,51 @@
-<div class="editor-container">
-    <h2>Edytuj Profil</h2>
-    <form [formGroup]="editForm" (ngSubmit)="onSubmit()">
-      <div>
-        <label for="firstName">Imię:</label>
-        <input id="firstName" formControlName="firstName" type="text" />
-        <div *ngIf="editForm.get('firstName')?.invalid && editForm.get('firstName')?.touched">
-          Imię jest wymagane.
-        </div>
+
+<h2 mat-dialog-title>Edytuj Profil</h2>
+<form [formGroup]="editForm" (ngSubmit)="onSubmit()">
+  <mat-dialog-content>
+    <div>
+      <label for="username">Nazwa użytkownika:</label>
+      <input id="username" formControlName="username" type="text" [disabled]="true" />
+    </div>
+
+    <div>
+      <label for="email">Email:</label>
+      <input id="email" formControlName="email" type="email" [disabled]="true" />
+    </div>
+
+    <div>
+      <label for="firstName">Imię:</label>
+      <input id="firstName" formControlName="firstName" type="text" />
+      <div *ngIf="editForm.get('firstName')?.invalid && editForm.get('firstName')?.touched">
+        Imię jest wymagane.
       </div>
-  
-      <div>
-        <label for="lastName">Nazwisko:</label>
-        <input id="lastName" formControlName="lastName" type="text" />
-        <div *ngIf="editForm.get('lastName')?.invalid && editForm.get('lastName')?.touched">
-          Nazwisko jest wymagane.
-        </div>
+    </div>
+
+    <div>
+      <label for="lastName">Nazwisko:</label>
+      <input id="lastName" formControlName="lastName" type="text" />
+      <div *ngIf="editForm.get('lastName')?.invalid && editForm.get('lastName')?.touched">
+        Nazwisko jest wymagane.
       </div>
-  
-      <div>
-        <label for="password">Nowe Hasło:</label>
-        <input id="password" formControlName="password" type="password" />
-        <div *ngIf="editForm.get('password')?.invalid && editForm.get('password')?.touched">
-          Jeśli chcesz zmienić hasło, podaj nowe hasło.
-        </div>
+    </div>
+
+    <div>
+      <label for="password">Nowe Hasło:</label>
+      <input id="password" formControlName="password" type="password" />
+      <div *ngIf="editForm.get('password')?.invalid && editForm.get('password')?.touched">
+        Jeśli chcesz zmienić hasło, podaj nowe hasło.
       </div>
-  
-      <button type="submit" [disabled]="editForm.invalid">Zaktualizuj Profil</button>
-    </form>
-  
+    </div>
+
     <div *ngIf="errorMessage" class="error">
       {{ errorMessage }}
     </div>
     <div *ngIf="successMessage" class="success">
       {{ successMessage }}
     </div>
-  </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" (click)="onCancel()">Anuluj</button>
+    <button mat-raised-button color="primary" type="submit" [disabled]="editForm.invalid">Zaktualizuj</button>
+  </mat-dialog-actions>
+</form>

@@ -12,6 +12,7 @@ const cronJob = require('./cron');
 const fieldsRoutes = require('./routes/fieldsRoutes');
 const cropsRoutes = require('./routes/cropsRoutes');
 const weatherRoutes = require('./routes/weatherRoutes');
+const satelliteRoutes = require('./routes/satelliteRoutes');
 
 const app = express();
 app.use(cors());
@@ -87,10 +88,22 @@ app.get('/api/navitems', async (req, res) => {
 app.use('/api/fields', fieldsRoutes);
 app.use('/api/crops', cropsRoutes);
 app.use('/api/weather', weatherRoutes);
+app.use('/api/satellite-images', satelliteRoutes);
 
 app.use((req, res, next) => {
     res.status(404).json({ message: 'Nie znaleziono tej trasy.' });
 });
+
+
+console.log('Loaded ENV Variables:');
+console.log('PORT:', process.env.PORT);
+console.log('MongoDB URI:', process.env.MONGODB_URI);
+console.log('Sentinel Hub Client ID:', process.env.SENTINELHUB_CLIENT_ID);
+console.log('Sentinel Hub Secret:', process.env.SENTINELHUB_CLIENT_SECRET);
+console.log('Sentinel Hub Instance ID:', process.env.SENTINELHUB_INSTANCE_ID);
+console.log('Sentinel Hub Base URL:', process.env.SENTINELHUB_BASE_URL);
+console.log('OpenWeatherMap API Key:', process.env.OPENWEATHERMAP_API_KEY);
+console.log('OpenWeatherMap Base URL:', process.env.OPENWEATHERMAP_BASE_URL);
 
 
 cronJob();

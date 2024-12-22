@@ -1,59 +1,35 @@
-.editor-container {
-    max-width: 500px;
-    margin: 0 auto;
-    padding: 2rem;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-  
-    h2 {
-      text-align: center;
-      margin-bottom: 1.5rem;
+/* src/app/components/user-editor/user-editor.component.scss */
+mat-dialog-content {
+  display: flex;
+  flex-direction: column;
+
+  div {
+    margin-bottom: 15px;
+
+    label {
+      display: block;
+      margin-bottom: 5px;
     }
-  
-    form div {
-      margin-bottom: 1rem;
-  
-      label {
-        display: block;
-        margin-bottom: 0.5rem;
-      }
-  
-      input {
-        width: 100%;
-        padding: 0.5rem;
-        box-sizing: border-box;
-      }
-  
-      .error {
-        color: red;
-        font-size: 0.875rem;
-      }
-    }
-  
-    button {
+
+    input {
       width: 100%;
-      padding: 0.75rem;
-      background-color: #ffc107;
-      border: none;
-      color: #fff;
-      border-radius: 4px;
-      cursor: pointer;
-  
-      &:disabled {
-        background-color: #6c757d;
-        cursor: not-allowed;
-      }
+      padding: 8px;
+      box-sizing: border-box;
     }
-  
+
     .error {
-      margin-top: 1rem;
       color: red;
-      text-align: center;
-    }
-  
-    .success {
-      margin-top: 1rem;
-      color: green;
-      text-align: center;
+      font-size: 12px;
     }
   }
+}
+
+.error {
+  color: red;
+  margin-top: 10px;
+}
+
+.success {
+  color: green;
+  margin-top: 10px;
+}

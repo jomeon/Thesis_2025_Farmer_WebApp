@@ -7,8 +7,9 @@ import { RegisterComponent } from './components/register/register.component';
 import { LoginComponent } from './components/login/login.component';
 import { UserEditorComponent } from './components/user-editor/user-editor.component';
 import { AuthGuard } from './guards/auth.guards';
-import { MapComponent } from './pages/map/map.component';
+import { MapComponent } from './components/map/map.component';
 import { FieldsTableComponent } from './components/fields-table/fields-table.component';
+import { UserComponent } from './components/user/user/user.component';
 
 
 export const routes: Routes = [
@@ -20,6 +21,7 @@ export const routes: Routes = [
   { path: 'edit-user', component: UserEditorComponent, canActivate: [AuthGuard] },// Opcjonalnie chronione
   { path: 'map', component: MapComponent, canActivate: [AuthGuard] },
   { path: 'fields', component: FieldsTableComponent, canActivate: [AuthGuard] },
+  { path: 'profile', component: UserComponent, canActivate: [AuthGuard] }, // Dodano trasę profile
   { path: '**', redirectTo: '' }, // Przekierowanie dla nieznanych tras
   
 ];

@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FieldService } from '../../services/field.service';
+import { MatDialog } from '@angular/material/dialog';
+import { AddFieldDialogComponent } from '../add-field-dialog/add-field-dialog.component';
 
 @Component({
   selector: 'app-fields-table',
@@ -11,8 +13,11 @@ export class FieldsTableComponent implements OnInit {
   weatherData: any = {};
   selectedDate: string = new Date().toISOString().split('T')[0];
   displayedColumns: string[] = ['name', 'area', 'crops', 'rainfall', 'temperature', 'profitLoss'];
-
-  constructor(private fieldService: FieldService) { }
+  
+  filteredFields: any[] = [];
+  constructor(private fieldService: FieldService,
+    public dialog: MatDialog
+  ) { }
 
   ngOnInit(): void {
     this.loadFields();
@@ -22,6 +27,7 @@ export class FieldsTableComponent implements OnInit {
     this.fieldService.getFields().subscribe(data => {
       this.fields = data;
       this.loadWeatherData();
+      this.fieldService.fetchFields();
     });
   }
 
@@ -41,4 +47,39 @@ export class FieldsTableComponent implements OnInit {
       });
     });
   }
+
+  openAddFieldDialog(): void {
+    const dialogRef = this.dialog.open(AddFieldDialogComponent, {
+      width: '1000px',
+       maxWidth: '90vw',
+      data: {} // Możesz przekazać dane, jeśli potrzebujesz
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.fieldService.addField(result).subscribe(() => {
+          this.loadFields();
+          this.fieldService.fetchFields();
+        });
+      }
+    });
+  }
+
+
+  filterByDate(): void {
+    if (this.selectedDate) {
+      this.filteredFields = this.fields.filter(field =>
+        field.date === this.selectedDate
+      );
+    }
+  }
+
+  clearFilter(): void {
+    this.selectedDate = '';
+    this.filteredFields = [...this.fields]; // Przywracanie oryginalnych danych
+  }
+
+
+  
+
 }

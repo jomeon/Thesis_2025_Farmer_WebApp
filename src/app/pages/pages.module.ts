@@ -1,28 +1,31 @@
-// src/app/pages/pages.module.ts
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
 
+import { RouterModule } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { AboutComponent } from './about/about.component';
 import { ContactComponent } from './contact/contact.component';
+import { MapComponent } from '../components/map/map.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [
     HomeComponent,
     AboutComponent,
-    ContactComponent
-    // Dodaj inne komponenty stron tutaj, jeśli są
+    ContactComponent,
+    MapComponent
+    // Inne komponenty
   ],
   imports: [
     CommonModule,
-    RouterModule // Importujemy RouterModule tutaj
+    MatProgressSpinnerModule,
+    RouterModule
   ],
   exports: [
     HomeComponent,
     AboutComponent,
     ContactComponent
-    // Eksportujemy komponenty stron, jeśli potrzebujesz ich używać w innych modułach
+    // Eksportuj komponenty, jeśli potrzebujesz ich w innych modułach
   ]
 })
 export class PagesModule { }

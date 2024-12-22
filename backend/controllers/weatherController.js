@@ -1,4 +1,10 @@
 const WeatherData = require('../models/Weather');
+const axios = require('axios');
+
+
+const OPENWEATHERMAP_API_KEY = process.env.OPENWEATHERMAP_API_KEY;
+const OPENWEATHERMAP_BASE_URL = process.env.OPENWEATHERMAP_BASE_URL;
+
 
 // GET /api/weather?fieldId=&date= – pobierz dane pogodowe dla pola i daty
 exports.getWeatherData = async (req, res) => {
@@ -38,5 +44,50 @@ exports.addWeatherData = async (req, res) => {
     res.status(201).json(newWeather);
   } catch (error) {
     res.status(400).json({ message: error.message });
+  }
+};
+
+
+exports.fetchAndSaveWeather = async (req, res) => {
+  const { fieldId, latitude, longitude } = req.body;
+
+  if (!fieldId || !latitude || !longitude) {
+    return res.status(400).json({ message: 'fieldId, latitude i longitude są wymagane.' });
+  }
+
+  try {
+    // Pobierz dane z OpenWeatherMap
+    const response = await axios.get(OPENWEATHERMAP_BASE_URL, {
+      params: {
+        lat: latitude,
+        lon: longitude,
+        appid: OPENWEATHERMAP_API_KEY,
+        units: 'metric'
+      }
+    });
+
+    const data = response.data;
+
+    // Przetwórz dane
+    const rainfall = data.rain ? data.rain['1h'] || data.rain['3h'] || 0 : 0;
+    const tempMin = data.main.temp_min;
+    const tempMax = data.main.temp_max;
+    const tempAvg = data.main.temp;
+
+    // Stwórz nowy wpis w bazie danych
+    const weather = new WeatherData({
+      field: fieldId,
+      date: new Date(),
+      rainfall,
+      tempMin,
+      tempMax,
+      tempAvg
+    });
+
+    const newWeather = await weather.save();
+    res.status(201).json(newWeather);
+  } catch (error) {
+    console.error('Error fetching weather data:', error);
+    res.status(500).json({ message: 'Błąd podczas pobierania danych pogodowych.' });
   }
 };

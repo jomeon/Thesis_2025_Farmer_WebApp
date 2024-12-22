@@ -1,0 +1,111 @@
+<h1 mat-dialog-title>Dodaj Nowe Pole</h1>
+<div mat-dialog-content>
+  <form [formGroup]="fieldForm">
+    <!-- Pole Nazwy Pola -->
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Nazwa Pola</mat-label>
+      <input matInput formControlName="name" required />
+      <mat-error *ngIf="fieldForm.get('name')?.hasError('required')">
+        Nazwa pola jest wymagana.
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Pole Powierzchni -->
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Powierzchnia (ha)</mat-label>
+      <input matInput type="number" formControlName="area" required class="no-spinner" />
+      <mat-error *ngIf="fieldForm.get('area')?.hasError('min')">
+        Powierzchnia nie może być ujemna.
+      </mat-error>
+      <mat-error *ngIf="fieldForm.get('area')?.hasError('required')">
+        Powierzchnia jest wymagana.
+      </mat-error>
+    </mat-form-field>
+
+      <!-- Mapa do Rysowania Polygonów -->
+      <div class="map-container">
+        <div #map id="map"></div>
+      </div>
+
+    <!-- Kontener dla FormArray 'crops' -->
+    <div formArrayName="crops" class="crops-container">
+      <mat-accordion multi="false">
+        <mat-expansion-panel
+    *ngFor="let crop of crops.controls; let i = index; trackBy: trackByFn"
+    [expanded]="i === expandedIndex"
+    (opened)="onPanelOpened(i)"
+  >
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Uprawa {{ crop.get('name')?.value || 'Nowa Uprawa' }}
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+
+          <!-- FormGroup dla każdej uprawy -->
+          <div [formGroupName]="i" class="crop-group">
+            <!-- Referencja do panelu dla przewijania -->
+            <div #panelElement>
+              <mat-form-field appearance="fill" class="full-width">
+                <mat-label>Nazwa Uprawy</mat-label>
+                <input matInput formControlName="name" required />
+                <mat-error *ngIf="crop.get('name')?.hasError('required')">
+                  Nazwa uprawy jest wymagana.
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="fill" class="full-width">
+                <mat-label>Koszt (PLN/ha)</mat-label>
+                <input matInput type="number" formControlName="cost" required class="no-spinner" />
+                <mat-error *ngIf="crop.get('cost')?.hasError('min')">
+                  Koszt nie może być ujemny.
+                </mat-error>
+                <mat-error *ngIf="crop.get('cost')?.hasError('required')">
+                  Koszt jest wymagany.
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="fill" class="full-width">
+                <mat-label>Szacunkowy Profit (PLN/ha)</mat-label>
+                <input matInput type="number" formControlName="profit" required class="no-spinner" />
+                <mat-error *ngIf="crop.get('profit')?.hasError('min')">
+                  Profit nie może być ujemny.
+                </mat-error>
+                <mat-error *ngIf="crop.get('profit')?.hasError('required')">
+                  Profit jest wymagany.
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <button
+              mat-mini-button
+              color="warn"
+              (click)="removeCropById(crop.get('id')?.value)"
+              type="button"
+              class="remove-crop-button"
+            >
+              <mat-icon>remove_circle</mat-icon> Usuń Uprawę
+            </button>
+          </div>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+
+    <!-- Przycisk Dodaj Uprawę -->
+    <button
+      mat-button
+      color="primary"
+      (click)="addCrop()"
+      type="button"
+      class="add-crop-button"
+    >
+      <mat-icon>add_circle</mat-icon> Dodaj Uprawę
+    </button>
+  </form>
+  
+ 
+  
+</div>
+<div mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Anuluj</button>
+  <button mat-button color="primary" (click)="onSubmit()" [disabled]="!fieldForm.valid">Dodaj</button>
+</div>

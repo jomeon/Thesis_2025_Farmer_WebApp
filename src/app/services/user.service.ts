@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
 import { UserProfile } from '../interfaces/user-interface';
@@ -13,11 +13,15 @@ export class UserService {
   constructor(private http: HttpClient, private authService: AuthService) { }
 
   getProfile(): Observable<UserProfile> {
-    return this.http.get<UserProfile>(`${this.apiUrl}/profile`);
+    const token = this.authService.getToken(); // Pobierz token z AuthService
+    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : undefined;
+    return this.http.get<UserProfile>(`${this.apiUrl}/profile`, { headers });
   }
 
   updateProfile(userData: any): Observable<UserProfile> {
-    return this.http.put<UserProfile>(`${this.apiUrl}/profile`, userData);
+    const token = this.authService.getToken();
+    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : undefined;
+    return this.http.put<UserProfile>(`${this.apiUrl}/profile`, userData, { headers });
   }
 
   getUsers(): Observable<any> {

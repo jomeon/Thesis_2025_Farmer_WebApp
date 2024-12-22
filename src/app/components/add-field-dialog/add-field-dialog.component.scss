@@ -1,0 +1,133 @@
+/* Ustawia szerokość na 100% dla elementów z klasą .full-width */
+.full-width {
+    width: 100%;
+  }
+  
+  /* Stylizuje kontener z uprawami */
+  .crops-container {
+    margin-top: 16px;
+  }
+  
+  /* Stylizuje każdą grupę upraw */
+  .crop-group {
+    border: 1px solid #ccc;
+    padding: 16px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+    position: relative;
+    background-color: #f9f9f9;
+  
+    h3 {
+      margin-top: 0;
+      margin-bottom: 16px;
+      font-size: 1.2em;
+      color: #333;
+    }
+  
+    mat-form-field {
+      margin-bottom: 16px;
+    }
+  }
+  
+  /* Stylizuje przycisk usuwania uprawy */
+  .remove-crop-button {
+    margin-top: 16px;
+  }
+  
+  /* Stylizuje przycisk dodawania uprawy */
+  .add-crop-button {
+    margin-top: 16px;
+  }
+  
+  /* Stylizuje mat-dialog-content, aby było scrollable */
+  mat-dialog-content {
+    max-height: 60vh; /* Ustaw maksymalną wysokość na 60% widoku */
+    overflow: auto; /* Pozwala na przewijanie, gdy zawartość przekroczy maksymalną wysokość */
+  }
+  
+  mat-dialog-actions {
+    margin-top: 16px;
+  }
+
+  .leaflet-container {
+    height: 400px;
+    width: 100%;
+    margin-bottom: 16px;
+    border: 1px solid #ccc;
+  }
+  
+
+  .no-spinner::-webkit-outer-spin-button,
+.no-spinner::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.no-spinner[type=number] {
+  -moz-appearance: textfield; /* Firefox */
+}
+
+.leaflet-draw-toolbar {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.8);
+  border: none;
+  padding: 5px;
+  border-radius: 4px;
+  z-index: 1000; /* Zapewnia, że kontrolki są nad innymi elementami */
+}
+
+/* Stylowanie poszczególnych przycisków */
+.leaflet-draw-toolbar-button {
+  background: #f5f5f5;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 40px; /* Zwiększona szerokość przycisków */
+  height: 40px; /* Zwiększona wysokość przycisków */
+  margin: 0 8px; /* Większe odstępy między przyciskami */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s, border-color 0.3s;
+  z-index: 1001;
+}
+
+.leaflet-draw-toolbar-button:hover {
+  background-color: #e0e0e0; /* Zmiana tła przy hover */
+  border-color: #999;
+}
+
+/* Stylowanie aktywnego przycisku */
+.leaflet-draw-toolbar-button.leaflet-draw-toolbar-button-active {
+  background-color: #d0d0d0;
+  border-color: #666;
+}
+
+/* Stylowanie ikon wewnątrz przycisków */
+.leaflet-draw-toolbar-button span {
+  width: 20px; /* Zwiększona ikona */
+  height: 20px;
+  display: block;
+  background-size: 20px 20px;
+}
+
+/* Przykład zmiany ikony przycisku rysowania polygonu */
+// .leaflet-draw-draw-polygon span {
+//   background-image: url('/assets/icons/polygon-icon.svg'); /* Ścieżka do niestandardowej ikony */
+// }
+
+// /* Możesz dodać podobne style dla innych przycisków */
+// .leaflet-draw-edit-edit span {
+//   background-image: url('/assets/icons/edit-icon.svg');
+// }
+
+// .leaflet-draw-edit-delete span {
+//   background-image: url('/assets/icons/delete-icon.svg');
+// }
+
+
+.leaflet-draw-toolbar-button {
+  z-index: 1001;
+}

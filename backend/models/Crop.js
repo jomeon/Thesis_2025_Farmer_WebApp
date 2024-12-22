@@ -15,3 +15,6 @@ const CropSchema = new mongoose.Schema({
     effectiveTemperatureSum: Number
   });
   
+
+const Crop = mongoose.model('Crop', CropSchema);
+module.exports = Crop;
