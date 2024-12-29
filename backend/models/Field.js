@@ -28,7 +28,10 @@ const FieldSchema = new mongoose.Schema({
   },
   area: { type: Number, required: true }, // Rozmiar w hektarach
   crops: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Crop' }],
-  effectiveTemperatureSum: { type: Number, default: 0 }
+  effectiveTemperatureSum: { type: Number, default: 0 },
+  totalProfit: { type: Number, default: 0 }, // Dodane pole
+  totalLoss: { type: Number, default: 0 }    // Dodane pole
+
 }, {
   timestamps: true
 });

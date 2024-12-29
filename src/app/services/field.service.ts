@@ -24,6 +24,14 @@ export class FieldService {
     getFields(): Observable<Field[]> {
       return this.http.get<Field[]>(this.fieldsUrl);
     }
+
+    getFieldById(id: string): Observable<Field> {
+      return this.http.get<Field>(`${this.fieldsUrl}/${id}`);
+    }
+
+    getFieldsByDate(date: string): Observable<any[]> {
+      return this.http.get<Field[]>(`${this.fieldsUrl}/byDate?date=${date}`);
+    }
   
     addField(field: Partial<Field>): Observable<any> {
       return this.http.post<Field>(this.fieldsUrl, field);

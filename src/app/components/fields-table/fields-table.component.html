@@ -53,30 +53,58 @@
       <!-- Opady -->
       <ng-container matColumnDef="rainfall">
         <th mat-header-cell *matHeaderCellDef> Opady (mm) </th>
-        <td mat-cell *matCellDef="let field"> {{ weatherData[field._id]?.rainfall || 'N/A' }} </td>
-      </ng-container>
-  
-      <!-- Temperatura -->
-      <ng-container matColumnDef="temperature">
-        <th mat-header-cell *matHeaderCellDef> Temperatura (°C) </th>
         <td mat-cell *matCellDef="let field">
-          Min: {{ weatherData[field._id]?.tempMin || 'N/A' }}°C<br />
-          Max: {{ weatherData[field._id]?.tempMax || 'N/A' }}°C<br />
-          Avg: {{ weatherData[field._id]?.tempAvg || 'N/A' }}°C
+          {{ field.weatherData?.rainfall ?? 'N/A' }}
         </td>
       </ng-container>
+
+      <!-- Temperatura -->
+       <ng-container matColumnDef="temperature">
+      <th mat-header-cell *matHeaderCellDef> Temperatura (°C) </th>
+      <td mat-cell *matCellDef="let field">
+        Min: {{ field.weatherData?.tempMin ?? 'N/A' }}°C<br/>
+        Max: {{ field.weatherData?.tempMax ?? 'N/A' }}°C<br/>
+        Avg: {{ field.weatherData?.tempAvg ?? 'N/A' }}°C
+      </td>
+    </ng-container>
+
+      
   
       <!-- Zyski / Straty -->
       <ng-container matColumnDef="profitLoss">
         <th mat-header-cell *matHeaderCellDef> Zyski / Straty </th>
         <td mat-cell *matCellDef="let field">
-          Zysk: {{ field.profit | currency:'PLN' }}<br />
-          Strata: {{ field.loss | currency:'PLN' }}
+          Zysk: {{ field.totalProfit | currency:'PLN' }}<br />
+          Strata: {{ field.totalLoss | currency:'PLN' }}
         </td>
       </ng-container>
+
+
+    <!-- Data z bazy -->
+    <ng-container matColumnDef="weatherDate">
+      <th mat-header-cell *matHeaderCellDef> Data Pogody </th>
+      <td mat-cell *matCellDef="let field">
+        {{ field.weatherData?.date | date:'yyyy-MM-dd' }}
+      </td>
+    </ng-container>
+
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef> Akcje </th>
+        <td mat-cell *matCellDef="let field">
+          <button mat-raised-button color="warn" (click)="deleteField(field)">
+            Usuń
+          </button>
+          &nbsp;
+          <button mat-raised-button color="primary" (click)="goToFieldHistory(field)">
+            Historia
+          </button>
+        </td>
+      </ng-container>
+
+     
   
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
   </div>
-  

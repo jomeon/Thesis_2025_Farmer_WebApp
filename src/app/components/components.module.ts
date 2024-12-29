@@ -18,6 +18,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { UserComponent } from './user/user/user.component';
 import { UserEditorComponent } from './user-editor/user-editor.component';
 import { MatDialogModule } from '@angular/material/dialog';
+import { HistoryComponent } from './history/history.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { MatDialogModule } from '@angular/material/dialog';
     UserComponent,
     FieldsTableComponent,
     AddFieldDialogComponent,
-    UserEditorComponent
+    UserEditorComponent,
+    HistoryComponent
     // Inne komponenty współdzielone
   ],
   imports: [

@@ -2,6 +2,8 @@ const cron = require('node-cron');
 const Field = require('./models/Field');
 const WeatherData = require('./models/Weather');
 const fetchWeatherData = require('./services/weatherService');
+const { fetchAndSaveWeatherHistory } = require('./services/weatherService');
+
 
 const scheduleWeatherDataFetch = () => {
   cron.schedule('0 0 * * *', async () => { // Codziennie o północy
@@ -33,5 +35,28 @@ const scheduleWeatherDataFetch = () => {
     }
   });
 };
+
+function scheduleWeatherHistoryFetch() {
+  // Raz dziennie o 02:00 w nocy (przykład)
+  cron.schedule('0 2 * * *', async () => {
+    console.log('CRON: Start pobierania historycznych danych pogodowych...');
+    try {
+      // Pobierz wszystkie pola
+      const fields = await Field.find({});
+
+      for (const field of fields) {
+        const { latitude, longitude } = field.location;
+        // Możesz np. zawsze pobierać 1 dzień wstecz (żeby mieć wczorajsze dane)
+        await fetchAndSaveWeatherHistory(field._id, latitude, longitude, 1);
+      }
+
+      console.log('CRON: Zakończono pobieranie danych pogodowych.');
+    } catch (err) {
+      console.error('CRON: Błąd podczas pobierania danych pogodowych:', err.message);
+    }
+  });
+}
+
+module.exports = scheduleWeatherHistoryFetch;
 
 module.exports = scheduleWeatherDataFetch;

@@ -35,4 +35,12 @@ const environment =  'http://localhost:5000/api';
     fetchAndSaveWeather(fieldId: string, latitude: number, longitude: number): Observable<WeatherData> {
       return this.http.post<WeatherData>(`${this.apiUrl}/fetch`, { fieldId, latitude, longitude });
     }
+
+    getWeatherHistory(fieldId: string): Observable<WeatherData[]> {
+      return this.http.get<WeatherData[]>(`${this.apiUrl}/history?fieldId=${fieldId}`);
+    }
+
+    getWeatherFromDB(fieldId: string, date: string): Observable<WeatherData[]> {
+      return this.http.get<WeatherData[]>(`${this.apiUrl}?fieldId=${fieldId}&date=${date}`);
+    }
   }

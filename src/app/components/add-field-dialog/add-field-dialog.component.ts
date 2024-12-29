@@ -23,7 +23,7 @@ export class AddFieldDialogComponent implements OnInit, AfterViewInit {
   
   @ViewChild('map') mapElement!: ElementRef;
   map!: L.Map;
- drawnItems = new L.FeatureGroup();
+  drawnItems = new L.FeatureGroup();
 
   polygons: L.Polygon[] = [];
   
@@ -42,6 +42,12 @@ export class AddFieldDialogComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {   
     console.log('Initial crops:', this.crops.value);
+    this.fieldForm.valueChanges.subscribe((val) => {
+      // Obliczmy sumę procentów
+      const total = val.crops.reduce((acc: number, c: any) => acc + c.percentage, 0);
+      console.log('Suma procentów:', total);
+      // Ewentualnie zapisuj do jakiegoś this.totalPerc, by wyświetlić w template
+    });
     this.expandedIndex = 0;
   }
 
@@ -64,7 +70,8 @@ export class AddFieldDialogComponent implements OnInit, AfterViewInit {
       id: [this.cropIdCounter++],
       name: ['', Validators.required],
       cost: [0, [Validators.required, Validators.min(0)]],
-      profit: [0, [Validators.required, Validators.min(0)]]
+      profit: [0, [Validators.required, Validators.min(0)]],
+      percentage: [0, [Validators.required, Validators.min(0), Validators.max(100)]],
     });
   }
 
@@ -120,15 +127,88 @@ export class AddFieldDialogComponent implements OnInit, AfterViewInit {
   onSubmit(): void {
     if (this.fieldForm.valid) {
       const formValue = this.fieldForm.value;
+      
+      // 1. Sprawdzenie sumy procentów
+      const totalPercentage = formValue.crops.reduce((acc: number, c: any) => acc + c.percentage, 0);
+      if (totalPercentage > 100) {
+        alert('Łączny udział procentowy upraw przekracza 100%! Proszę skorygować.');
+        return;
+      }
+  
+      // 2. Pobieranie polygons
       const polygons = this.getPolygonsData();
-
       if (polygons.length === 0) {
-        // Możesz dodać walidację, aby upewnić się, że przynajmniej jeden polygon został narysowany
         alert('Proszę narysować przynajmniej jeden polygon.');
         return;
       }
-    
-      // Przekształć uprawy na odpowiedni format, np. obiekty z kosztami i profitami
+  
+      // 3. Obliczanie ha i zysku/straty dla każdej uprawy
+      // formValue.area - całkowita powierzchnia (ha)
+      // Każda uprawa: haUprawy = (percentage/100) * area
+      // ZyskUprawy = (profit - cost) * haUprawy
+      // const recalculatedCrops = formValue.crops.map((crop: any) => {
+
+      //   const costPerHa = crop.cost;
+      //   const returnPerHa = crop.profit; 
+      //   const percentage = crop.percentage ?? 0;
+
+      // // Wielkość uprawy w ha
+      //   const sizeHa = (percentage / 100) * formValue.area;
+      
+      //   // Oczekiwany zysk (dla całej uprawy), może wyjść ujemny
+      //   const finalProfit = (returnPerHa - costPerHa) * sizeHa;
+
+      //   return {
+      //     name: crop.name,
+      //     percentage,
+      //     costPerHa,           // rename
+      //     returnPerHa, 
+      //     size: parseFloat(sizeHa.toFixed(2)), 
+      //     profit: parseFloat(finalProfit.toFixed(2)),
+      //     loss: finalProfit < 0 ? Math.abs(finalProfit) : 0,
+      //     description: crop.description || '',
+      //     effectiveTemperatureSum: crop.effectiveTemperatureSum || 0
+      //   };
+      // });
+  
+      // // 4. Tworzymy finalny obiekt
+      // const fieldData = {
+      //   name: formValue.name,
+      //   area: formValue.area,
+      //   polygons: {
+      //     type: 'FeatureCollection',
+      //     features: polygons
+      //   },
+      //   crops: recalculatedCrops
+      // };
+      const area = formValue.area; // całkowita powierzchnia w ha
+
+      // 3. Oblicz parametry cropów
+      //    cost -> costPerHa
+      //    profit -> returnPerHa
+      //    size = (percentage/100)*area
+      //    finalProfit = (returnPerHa - costPerHa)*size
+      const recalculatedCrops = formValue.crops.map((crop: any) => {
+        const costPerHa = crop.cost;    // w [PLN/ha]
+        const returnPerHa = crop.profit; // w [PLN/ha]
+        const pct = crop.percentage || 0;
+  
+        const size = (pct / 100) * area; 
+        const finalProfit = (returnPerHa - costPerHa) * size; 
+        const lossValue = finalProfit < 0 ? Math.abs(finalProfit) : 0;
+  
+        return {
+          name: crop.name,
+          costPerHa: crop.cost,   
+          returnPerHa: crop.profit,
+          percentage: crop.percentage,
+          size: size.toFixed(2),
+          profit: finalProfit,
+          loss: lossValue
+        };
+      });
+  
+      // 4. Zbuduj obiekt fieldData
       const fieldData = {
         name: formValue.name,
         area: formValue.area,
@@ -136,14 +216,9 @@ export class AddFieldDialogComponent implements OnInit, AfterViewInit {
           type: 'FeatureCollection',
           features: polygons
         },
-        crops: formValue.crops.map((crop: any) => ({
-          name: crop.name,
-          cost: crop.cost,
-          profit: crop.profit
-        })),
-       
-        // Dodaj inne pola, jeśli są potrzebne
+        crops: recalculatedCrops
       };
+      // 5. Zamykamy dialog z fieldData
       this.dialogRef.close(fieldData);
     }
   }

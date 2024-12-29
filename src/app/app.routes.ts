@@ -10,6 +10,7 @@ import { AuthGuard } from './guards/auth.guards';
 import { MapComponent } from './components/map/map.component';
 import { FieldsTableComponent } from './components/fields-table/fields-table.component';
 import { UserComponent } from './components/user/user/user.component';
+import { HistoryComponent } from './components/history/history.component';
 
 
 export const routes: Routes = [
@@ -22,7 +23,9 @@ export const routes: Routes = [
   { path: 'map', component: MapComponent, canActivate: [AuthGuard] },
   { path: 'fields', component: FieldsTableComponent, canActivate: [AuthGuard] },
   { path: 'profile', component: UserComponent, canActivate: [AuthGuard] }, // Dodano trasę profile
+  { path: 'fields/:id/history', component: HistoryComponent },
   { path: '**', redirectTo: '' }, // Przekierowanie dla nieznanych tras
+  
   
 ];
 

@@ -5,12 +5,14 @@ export interface Crop {
     name: string;
     size: number;
     percentage: number;
-    cost: number;
+    costPerHa: number;
     returnPerHa: number;
     profit: number;
     loss: number;
     description: string;
     effectiveTemperatureSum: number;
+    startDate?: Date;
+    endDate?: Date;  
     __v: number;
   }
   

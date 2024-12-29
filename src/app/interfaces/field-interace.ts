@@ -16,7 +16,15 @@ export interface Field {
     polygons: Polygon[];
     crops: Crop[];
     effectiveTemperatureSum: number;
+    totalProfit?: number;
+    totalLoss?: number;
     __v: number;
     createdAt?: string; // Opcjonalnie, jeśli API zwraca te pola
     updatedAt?: string; // Opcjonalnie, jeśli API zwraca te pola
   }
+
+  export interface PolygonGeoJSON {
+    type: 'Polygon';
+    coordinates: number[][][];
+  }
+  

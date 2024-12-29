@@ -96,10 +96,12 @@ export class MapComponent implements OnInit, AfterViewInit {
                 Powierzchnia: ${field.area} ha<br/>
                 <strong>Uprawy:</strong>
                 <ul>
-                  ${field.crops.map((crop: Crop) => `<li>${crop.name} - Koszt: ${crop.cost}, Zysk: ${crop.profit}</li>`).join('')}
+                  ${field.crops.map((crop: Crop) => `<li>${crop.name} - KosztPerHa: ${crop.costPerHa}, Zysk: ${crop.profit}</li>`).join('')}
                 </ul>
                 <strong>Inne Info:</strong><br/>
                 Suma Temperatur Efektywnych: ${field.effectiveTemperatureSum}
+
+                
               `;
   
               // Bindowanie popupu z informacjami o polu
@@ -152,36 +154,64 @@ export class MapComponent implements OnInit, AfterViewInit {
     }
   }
 
-  private fetchWeatherData(field: Field, geojson: any,  layer: L.GeoJSON): void {
-    const latitude = geojson.coordinates[0][0][1];
-    const longitude = geojson.coordinates[0][0][0];
-
-    this.weatherService.fetchAndSaveWeather(field._id, latitude, longitude).subscribe(
-      (weather: WeatherData) => {
-        console.log('Weather data saved:', weather);
-        // Możesz dodać dodatkową logikę, np. wyświetlanie danych w popupie
+  private fetchWeatherData(field: Field, geojson: any, layer: L.GeoJSON): void {
+    // Załóżmy, że chcesz pobrać dane TYLKO z bazy dla aktualnego dnia
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    const dateStr = `${yyyy}-${mm}-${dd}`; // np. "2024-01-05"
+  
+    // Zamiast latitude/longitude do API, używamy TYLKO fieldId + date
+    // i pobieramy dane z bazy przez getWeatherFromDB
+    this.weatherService.getWeatherFromDB(field._id, dateStr).subscribe(
+      (weatherArr: WeatherData[]) => {
+        // Zakładamy, że weatherArr to tablica 0..n elementów z bazy
+        const weather = weatherArr.length > 0 ? weatherArr[0] : undefined;
+  
+        let weatherHtml = '';
+        if (weather) {
+          weatherHtml = `
+            <strong>Aktualna Pogoda:</strong><br/>
+            Temperatura: ${weather.tempAvg}°C<br/>
+            Opady: ${weather.rainfall} mm<br/>
+          `;
+        } else {
+          weatherHtml = `
+            <strong>Brak zapisanych danych pogodowych w bazie<br/>
+            (Możesz dodać mechanizm, by pobrać z API – ale tylko jeśli to dozwolone)</strong><br/>
+          `;
+        }
+  
+        // Teraz zbuduj popup content
         const popupContent = `
           <strong>${field.name}</strong><br/>
           Powierzchnia: ${field.area} ha<br/>
           <strong>Uprawy:</strong>
           <ul>
-            ${field.crops.map((crop: Crop) => `<li>${crop.name} - Koszt: ${crop.cost}, Zysk: ${crop.profit}</li>`).join('')}
+            ${field.crops
+              .map((crop: Crop) => `<li><strong>${crop.name}</strong></br> KosztPerHa: ${crop.costPerHa}</br> Zysk: ${crop.profit}</li>`)
+              .join('')}
           </ul>
           <strong>Inne Info:</strong><br/>
           Suma Temperatur Efektywnych: ${field.effectiveTemperatureSum}<br/>
-          <strong>Aktualna Pogoda:</strong><br/>
-          Temperatura: ${weather.tempAvg}°C<br/>
-          Opady: ${weather.rainfall} mm
+          ${weatherHtml}
+  
+          <div style="margin-top: 8px;">
+            <a href="/fields/${field._id}/history" target="_blank" class="btn btn-primary">
+              Zobacz historię pola
+            </a>
+          </div>
         `;
-        // Przypisz nowy popup z danymi pogodowymi
         layer.bindPopup(popupContent);
         layer.openPopup();
       },
       (error) => {
-        console.error('Error fetching and saving weather data:', error);
+        console.error('Error fetching weather data from DB:', error);
       }
     );
   }
+  
 
   private fetchSatelliteImages(field: Field, geojson: any, layer: L.GeoJSON): void {
     const fieldId = field._id;

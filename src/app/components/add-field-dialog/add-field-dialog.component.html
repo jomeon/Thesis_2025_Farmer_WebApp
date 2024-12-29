@@ -74,6 +74,20 @@
                   Profit jest wymagany.
                 </mat-error>
               </mat-form-field>
+
+              <mat-form-field appearance="fill" class="full-width">
+                <mat-label>Udział % w polu</mat-label>
+                <input matInput type="number" formControlName="percentage" required class="no-spinner" />
+                <mat-error *ngIf="crop.get('percentage')?.hasError('min')">
+                  Udział nie może być ujemny.
+                </mat-error>
+                <mat-error *ngIf="crop.get('percentage')?.hasError('max')">
+                  Udział nie może być większy niż 100%.
+                </mat-error>
+                <mat-error *ngIf="crop.get('percentage')?.hasError('required')">
+                  Udział jest wymagany.
+                </mat-error>
+              </mat-form-field>
             </div>
 
             <button
