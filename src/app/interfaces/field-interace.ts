@@ -23,8 +23,4 @@ export interface Field {
     updatedAt?: string; // Opcjonalnie, jeśli API zwraca te pola
   }
 
-  export interface PolygonGeoJSON {
-    type: 'Polygon';
-    coordinates: number[][][];
-  }
   

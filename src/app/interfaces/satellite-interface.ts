@@ -1,3 +1,4 @@
 export interface SatelliteImage {
-    imageUrl: string; // URL do obrazu satelitarnego (base64 lub URL zewnętrzny)
-}  
+    imageBase64Default: string; // Ciąg Base64 obrazu RGB
+    imageBase64Ndvi: string;    // Ciąg Base64 obrazu NDVI
+}

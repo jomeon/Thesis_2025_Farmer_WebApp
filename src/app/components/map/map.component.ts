@@ -53,12 +53,48 @@ export class MapComponent implements OnInit, AfterViewInit {
     this.loadFields();
   }
 
-  private initMap(): void {
-    this.map = L.map(this.mapElement.nativeElement).setView([51.505, -0.09], 13); // Ustawienia początkowe
+  // private initMap(): void {
+  //   this.map = L.map(this.mapElement.nativeElement).setView([51.505, -0.09], 13); // Ustawienia początkowe
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  //   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  //     attribution: '&copy; OpenStreetMap contributors'
+  //   }).addTo(this.map);
+  // }
+
+
+  private initMap(): void {
+    // 1. Inicjalizacja mapy
+    this.map = L.map(this.mapElement.nativeElement).setView([51.505, -0.09], 13);
+
+    // 2a. Warstwa OpenStreetMap (jeśli CHCESZ zostawić OSM w aplikacji)
+    const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(this.map);
+    });
+
+    // 2b. Warstwa z Sentinel Hub (WMS)
+    const sentinelHubLayer = L.tileLayer.wms(
+      'https://services.sentinel-hub.com/ogc/wms/46307560-6d4a-49e9-9a21-a6f0b735b961', // <-- Twój instanceId
+      {
+        layers: '1_TRUE_COLOR',    // Nazwa warstwy z Sentinel Hub (np. 1_TRUE_COLOR, NDVI etc.)
+        format: 'image/jpeg',      // Może być image/png
+        transparent: false,
+        maxZoom: 19,               // Dostępne max Zoom (zobacz w Sentinel Hub, czy nie wolisz np. 20)
+        // attribution: '&copy; Sentinel Hub'
+      }
+    );
+
+    // 3. Dodaj JEDNĄ z warstw do mapy:
+    //    - Jeśli chcesz TYLKO satelitarną: dodaj sentinelHubLayer
+    //    - Jeśli chcesz TYLKO OSM: dodaj osmLayer
+    //    - Jeśli chcesz obie i przełącznik, użyj L.control.layers(...)
+    osmLayer.addTo(this.map);
+
+    // 4. Opcjonalnie – kontrolka warstw, jeśli chcesz mieć przełącznik
+    const baseMaps = {
+      'OpenStreetMap': osmLayer,
+      'Sentinel - True Color': sentinelHubLayer
+    };
+    L.control.layers(baseMaps).addTo(this.map);
   }
 
   private loadFields(): void {
@@ -111,7 +147,7 @@ export class MapComponent implements OnInit, AfterViewInit {
               layer.on('click', () => {
                 layer.openPopup();
                 this.fetchWeatherData(field, geojson, layer);
-                this.fetchSatelliteImages(field, geojson, layer);
+                // this.fetchSatelliteImages(field, geojson, layer);
               });
   
               layer.addTo(allLayers);
@@ -213,46 +249,46 @@ export class MapComponent implements OnInit, AfterViewInit {
   }
   
 
-  private fetchSatelliteImages(field: Field, geojson: any, layer: L.GeoJSON): void {
-    const fieldId = field._id;
-    const date = new Date().toISOString().split('T')[0]; // Możesz dostosować datę do wybranego dnia
+  // private fetchSatelliteImages(field: Field, geojson: any, layer: L.GeoJSON): void {
+  //   const fieldId = field._id;
+  //   const date = new Date().toISOString().split('T')[0]; // Możesz dostosować datę do wybranego dnia
 
-    this.satelliteService.getSatelliteImages(fieldId, date).subscribe(
-      (image: SatelliteImage) => {
-        console.log('Satellite image:', image);
-        // Dodanie obrazu jako overlay na mapie
-        if (
-          geojson &&
-          geojson.coordinates &&
-          geojson.coordinates[0] &&
-          geojson.coordinates[0].length >= 2
-        ) {
-          // Konwersja współrzędnych na LatLngBoundsExpression
-          const imageBounds: L.LatLngBoundsExpression = [
-            [geojson.coordinates[0][0][1], geojson.coordinates[0][0][0]], // Górny lewy róg
-            [geojson.coordinates[0][2][1], geojson.coordinates[0][2][0]]  // Dolny prawy róg
-          ];
+  //   this.satelliteService.getSatelliteImages(fieldId, date).subscribe(
+  //     (image: SatelliteImage) => {
+  //       console.log('Satellite image:', image);
+  //       // Dodanie obrazu jako overlay na mapie
+  //       if (
+  //         geojson &&
+  //         geojson.coordinates &&
+  //         geojson.coordinates[0] &&
+  //         geojson.coordinates[0].length >= 2
+  //       ) {
+  //         // Konwersja współrzędnych na LatLngBoundsExpression
+  //         const imageBounds: L.LatLngBoundsExpression = [
+  //           [geojson.coordinates[0][0][1], geojson.coordinates[0][0][0]], // Górny lewy róg
+  //           [geojson.coordinates[0][2][1], geojson.coordinates[0][2][0]]  // Dolny prawy róg
+  //         ];
   
-          // Dodanie obrazu jako overlay na mapie
-          L.imageOverlay(image.imageUrl, imageBounds, {
-            opacity: 0.6,
-            interactive: true,
-          })
-            .addTo(this.map)
-            .bindPopup(`
-              <strong>Obraz Satelitarny</strong><br/>
-              Data: ${date}<br/>
-              <img src="${image.imageUrl}" alt="Satellite Image" style="width:100%; height:auto;">
-            `);
-        } else {
-          console.error('Invalid GeoJSON coordinates:', geojson.coordinates);
-        }
-      },
-      (error) => {
-        console.error('Error fetching satellite images:', error);
-      }
-    );
-  }
+  //         // Dodanie obrazu jako overlay na mapie
+  //         L.imageOverlay(image.imageUrl, imageBounds, {
+  //           opacity: 0.6,
+  //           interactive: true,
+  //         })
+  //           .addTo(this.map)
+  //           .bindPopup(`
+  //             <strong>Obraz Satelitarny</strong><br/>
+  //             Data: ${date}<br/>
+  //             <img src="${image.imageUrl}" alt="Satellite Image" style="width:100%; height:auto;">
+  //           `);
+  //       } else {
+  //         console.error('Invalid GeoJSON coordinates:', geojson.coordinates);
+  //       }
+  //     },
+  //     (error) => {
+  //       console.error('Error fetching satellite images:', error);
+  //     }
+  //   );
+  // }
 
 
 }

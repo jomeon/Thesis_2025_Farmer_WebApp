@@ -88,7 +88,11 @@ app.get('/api/navitems', async (req, res) => {
 app.use('/api/fields', fieldsRoutes);
 app.use('/api/crops', cropsRoutes);
 app.use('/api/weather', weatherRoutes);
-app.use('/api/satellite-images', satelliteRoutes);
+app.use('/api/satellite', satelliteRoutes);
+
+const satelliteController = require('./controllers/satelliteController');
+satelliteController.scheduleDailySatelliteImages();
+
 
 app.use((req, res, next) => {
     res.status(404).json({ message: 'Nie znaleziono tej trasy.' });

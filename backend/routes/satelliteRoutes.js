@@ -5,4 +5,6 @@ const satelliteController = require('../controllers/satelliteController');
 // Trasa do pobierania obrazów satelitarnych
 router.get('/images', satelliteController.getSatelliteImages);
 
+router.get('/image', satelliteController.getSatelliteImageAsPNG);
+
 module.exports = router;

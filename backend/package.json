@@ -21,7 +21,8 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.8.2",
     "node-cache": "^5.1.2",
-    "node-cron": "^3.0.3"
+    "node-cron": "^3.0.3",
+    "parse-multipart": "^1.0.4"
   },
   "description": "",
   "devDependencies": {
