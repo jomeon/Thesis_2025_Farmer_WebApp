@@ -1,0 +1,13 @@
+.chart {
+    width: 80%;        /* Możesz ustawić % lub px */
+    max-width: 1200px; /* Górny limit szerokości, aby nie rozciągać się przesadnie */
+    margin: 0 auto;    /* Kluczowe - wycentruje element w poziomie */
+    height: 400px;
+    padding-top: 100px;
+  }
+
+  .chart-container {
+    display: flex;
+    justify-content: center; /* Wycentruje wszystko w poziomie */
+    width: 100%;
+  }

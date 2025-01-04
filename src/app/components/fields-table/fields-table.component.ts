@@ -26,6 +26,8 @@ export class FieldsTableComponent implements OnInit {
   expandedElement: any | null = null;  // do przechowywania aktualnie rozwiniętego wiersza
   
   filteredFields: any[] = [];
+
+  
   
   constructor(private fieldService: FieldService,
     public dialog: MatDialog,

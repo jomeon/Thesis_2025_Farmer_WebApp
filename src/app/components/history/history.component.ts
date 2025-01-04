@@ -35,6 +35,8 @@ export class HistoryComponent implements OnInit {
 
   private layerControl!: L.Control.Layers;
 
+  selectedFieldId: string = '';
+  
   constructor(
     private route: ActivatedRoute,
     private fieldService: FieldService,

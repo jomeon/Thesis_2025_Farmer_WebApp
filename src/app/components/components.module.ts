@@ -19,9 +19,11 @@ import { UserComponent } from './user/user/user.component';
 import { UserEditorComponent } from './user-editor/user-editor.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { HistoryComponent } from './history/history.component';
+import { TemperatureChartComponent } from './temperature-chart/temperature-chart.component';
 
 @NgModule({
   declarations: [
+    TemperatureChartComponent,
     NavbarComponent,
     UsersComponent,
     UserComponent,
@@ -52,6 +54,7 @@ import { HistoryComponent } from './history/history.component';
     NavbarComponent,
     UserComponent,
     FieldsTableComponent,
+    TemperatureChartComponent
    
   ],
   providers: [  
