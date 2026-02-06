@@ -42,4 +42,4 @@ testem.log
 Thumbs.db
 **/.env
 .env
-backend/services/.env
+backend/.env
